@@ -65,6 +65,7 @@ def main(config: ROSTrainerConfig) -> None:
         _set_random_seed(config.machine.seed)
         trainer = config.setup(local_rank=0, world_size=1)
         trainer.setup()
+        breakpoint()
         trainer.train()
     except KeyboardInterrupt:
         # print the stack trace
