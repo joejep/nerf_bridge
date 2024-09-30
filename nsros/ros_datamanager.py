@@ -47,6 +47,7 @@ class ROSDataManager(
 
     config: ROSDataManagerConfig
     train_dataset: ROSDataset
+    eval_dataset: ROSDataset
 
     def create_train_dataset(self) -> ROSDataset:
         self.train_dataparser_outputs = self.dataparser.get_dataparser_outputs(
@@ -93,28 +94,50 @@ class ROSDataManager(
         return ray_bundle, batch
 
     def setup_eval(self):
-        """
-        Evaluation data is not implemented! This function is called by
-        the parent class, but the results are never used.
-        """
-        pass
+        """Sets up the data loader for evaluation"""
+        assert self.eval_dataset is not None
+        CONSOLE.print("Setting up evaluation dataset...")
+        self.eval_image_dataloader = ROSDataloader(
+            self.eval_dataset,
+            self.config.publish_training_posearray,
+            self.config.data_update_freq,
+            device=self.device,
+            num_workers=0,
+            pin_memory=True,
+            collate_fn=self.config.collate_fn,
+        )
+        self.iter_eval_image_dataloader = iter(self.eval_image_dataloader)
+        self.eval_pixel_sampler = self._get_pixel_sampler(
+            self.eval_dataset, self.config.eval_num_rays_per_batch
+        )
+        self.eval_camera_optimizer = self.config.camera_optimizer.setup(
+            num_cameras=self.eval_dataset.cameras.size, device=self.device
+        )
+        self.eval_ray_generator = RayGenerator(
+            self.eval_dataset.cameras,
+            self.eval_camera_optimizer,
+        )
 
     def create_eval_dataset(self):
-        """
-        Evaluation data is not implemented! This function is called by
-        the parent class, but the results are never used.
-        """
-        pass
+        self.eval_dataparser_outputs = self.dataparser.get_dataparser_outputs(
+            split="test", num_images=self.config.num_training_images
+        )
+        return ROSDataset(
+            dataparser_outputs=self.eval_dataparser_outputs, device=self.device
+        )
 
     def next_eval(self, step: int) -> Tuple[RayBundle, Dict]:
-        """Returns the next batch of data from the eval dataloader."""
-        CONSOLE.print("Evaluation data is not setup!")
-        raise NameError(
-            "Evaluation funcationality not yet implemented with ROS Streaming."
-        )
+        self.eval_count += 1
+        image_batch = next(self.iter_eval_image_dataloader)
+        assert self.eval_pixel_sampler is not None
+        batch = self.eval_pixel_sampler.sample(image_batch)
+        ray_indices = batch["indices"]
+        ray_bundle = self.eval_ray_generator(ray_indices)
+        return ray_bundle, batch
 
     def next_eval_image(self, step: int) -> Tuple[int, RayBundle, Dict]:
-        CONSOLE.print("Evaluation data is not setup!")
-        raise NameError(
-            "Evaluation funcationality not yet implemented with ROS Streaming."
-        )
+        for camera_ray_bundle, batch in self.eval_dataloader:
+            assert camera_ray_bundle.camera_indices is not None
+            image_idx = int(camera_ray_bundle.camera_indices[0, 0, 0])
+            return image_idx, camera_ray_bundle, batch
+        raise ValueError("No more eval images")
