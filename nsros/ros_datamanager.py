@@ -68,7 +68,7 @@ class ROSDataManager(
             pin_memory=True,
             collate_fn=self.config.collate_fn,
         )
-        
+
         self.iter_train_image_dataloader = iter(self.train_image_dataloader)
         self.train_pixel_sampler = self._get_pixel_sampler(
             self.train_dataset, self.config.train_num_rays_per_batch
@@ -88,6 +88,7 @@ class ROSDataManager(
         """
         self.train_count += 1
         image_batch = next(self.iter_train_image_dataloader)
+        breakpoint()
         assert self.train_pixel_sampler is not None
         batch = self.train_pixel_sampler.sample(image_batch)
         ray_indices = batch["indices"]
