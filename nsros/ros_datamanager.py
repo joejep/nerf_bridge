@@ -111,6 +111,7 @@ class ROSDataManager(
                 self.train_camera_optimizer,
             )
             image_batch = next(self.iter_train_image_dataloader)
+        breakpoint()
         assert self.train_pixel_sampler is not None
         batch = self.train_pixel_sampler.sample(image_batch)
         ray_indices = batch["indices"]
