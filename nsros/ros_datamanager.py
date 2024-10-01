@@ -68,6 +68,7 @@ class ROSDataManager(
             pin_memory=True,
             collate_fn=self.config.collate_fn,
         )
+        
         self.iter_train_image_dataloader = iter(self.train_image_dataloader)
         self.train_pixel_sampler = self._get_pixel_sampler(
             self.train_dataset, self.config.train_num_rays_per_batch

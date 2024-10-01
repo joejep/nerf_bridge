@@ -1,5 +1,7 @@
 import tyro
-from nsros.ros_exporter import ExportPointCloud, ExportCameraPoses, ExportTSDFMesh, ExportTSDFMesh, ExportMarchingCubesMesh
+from typing import Union
+from typing_extensions import Annotated, Literal
+from nsros.ros_exporter import ExportPointCloud, ExportCameraPoses, ExportTSDFMesh, ExportPoissonMesh, ExportMarchingCubesMesh
 
 Commands = tyro.conf.FlagConversionOff[
     Union[

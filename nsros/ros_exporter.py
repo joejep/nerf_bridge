@@ -24,10 +24,8 @@ from pathlib import Path
 import yaml
 from rich.console import Console
 
-from ros_trainer import ROSTrainerConfig
+from nsros.ros_trainer import ROSTrainerConfig
 from nerfstudio.pipelines.base_pipeline import Pipeline
-
-from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
