@@ -196,6 +196,7 @@ class ROSDataloader(DataLoader):
         batch = {}
         for k, v in self.data_dict.items():
             if isinstance(v, torch.Tensor):
+                print("V in this batch is ", v.shape)
                 batch[k] = v[: self.current_idx, ...]
         return batch
 
