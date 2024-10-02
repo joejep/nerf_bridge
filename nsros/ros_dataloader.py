@@ -198,6 +198,7 @@ class ROSDataloader(DataLoader):
             if isinstance(v, torch.Tensor):
                 print("V in this batch is ", v.shape)
                 print("Selection is", v[: self.current_idx, ...].shape)
+                print("Current index", self.current_idx)
                 batch[k] = v[: self.current_idx, ...]
         return batch
 
