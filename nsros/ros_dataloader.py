@@ -201,7 +201,7 @@ class ROSDataloader(DataLoader):
         while True:
             if self.updated or self.bypass_updated:
                 self.batch = self._get_updated_batch()
-                self.updated = False
+                self.updated = False if not self.bypass_updated
 
             batch = self.batch
             yield batch
