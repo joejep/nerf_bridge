@@ -96,6 +96,7 @@ class ROSDataManager(
                 self.train_dataset,
                 self.config.publish_training_posearray,
                 self.config.data_update_freq,
+                bypass_updated=True,
                 device=self.device,
                 num_workers=0,
                 pin_memory=True,

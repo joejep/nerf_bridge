@@ -94,6 +94,7 @@ class ROSDataloader(DataLoader):
         publish_posearray: bool,
         data_update_freq: float,
         device: Union[torch.device, str] = "cpu",
+        bypass_updated: bool = False,
         **kwargs,
     ):
         # This is mostly a parameter placeholder, and manages the cameras
@@ -198,7 +199,7 @@ class ROSDataloader(DataLoader):
 
     def __iter__(self):
         while True:
-            if self.updated:
+            if self.updated or self.bypass_updated:
                 self.batch = self._get_updated_batch()
                 self.updated = False
 
