@@ -209,4 +209,5 @@ class ROSDataloader(DataLoader):
                 self.batch = self._get_updated_batch()
                 self.updated = False
             batch = self.batch
+            print(batch['image'].shape)
             yield batch
