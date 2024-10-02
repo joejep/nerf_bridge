@@ -207,6 +207,6 @@ class ROSDataloader(DataLoader):
             if self.updated:
                 if self.bypass_updated: self.current_idx += 1
                 self.batch = self._get_updated_batch()
-                if not self.bypass_updated: self.updated = False
+                self.updated = False
             batch = self.batch
             yield batch
