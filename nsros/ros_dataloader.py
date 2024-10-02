@@ -192,7 +192,6 @@ class ROSDataloader(DataLoader):
 
     def _get_updated_batch(self):
         batch = {}
-        breakpoint()
         for k, v in self.data_dict.items():
             if isinstance(v, torch.Tensor):
                 batch[k] = v[: self.current_idx, ...]
@@ -202,7 +201,7 @@ class ROSDataloader(DataLoader):
         while True:
             if self.updated or self.bypass_updated:
                 self.batch = self._get_updated_batch()
-                self.updated = False
+                if not self.bypass_updated: self.updated = False
 
             batch = self.batch
             yield batch
