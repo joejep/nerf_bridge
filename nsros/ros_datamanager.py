@@ -105,7 +105,6 @@ class ROSDataManager(
             )
 
             self.iter_train_image_dataloader = iter(self.train_image_dataloader)
-            breakpoint()
             self.train_pixel_sampler = self._get_pixel_sampler(
                 self.train_dataset, self.config.train_num_rays_per_batch
             )
