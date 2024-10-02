@@ -178,6 +178,7 @@ class ExportPointCloud(Exporter):
         # Increase the batchsize to speed up the evaluation.
         pipeline.datamanager.train_dataset = pipeline.datamanager.create_train_dataset()
         pipeline.datamanager.setup_train()
+        breakpoint()
         pipeline.datamanager.train_pixel_sampler.num_rays_per_batch = self.num_rays_per_batch
 
         pcd = generate_point_cloud(
