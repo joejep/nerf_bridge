@@ -118,6 +118,7 @@ class ROSDataManager(
             )
 
         assert self.train_pixel_sampler is not None
+        breakpoint()
         batch = self.train_pixel_sampler.sample(image_batch)
         ray_indices = batch["indices"]
         ray_bundle = self.train_ray_generator(ray_indices)
