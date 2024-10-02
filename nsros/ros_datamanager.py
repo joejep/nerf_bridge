@@ -15,6 +15,8 @@ from nsros.ros_dataset import ROSDataset
 from nsros.ros_dataloader import ROSDataloader
 from nsros.ros_dataparser import ROSDataParserConfig
 
+import torch
+
 
 CONSOLE = Console(width=120)
 
@@ -59,7 +61,6 @@ class ROSDataManager(
 
     def setup_train(self):
         assert self.train_dataset is not None
-        breakpoint()
         self.train_image_dataloader = ROSDataloader(
             self.train_dataset,
             self.config.publish_training_posearray,
@@ -89,6 +90,30 @@ class ROSDataManager(
         """
         self.train_count += 1
         image_batch = next(self.iter_train_image_dataloader)
+        if image_batch['image'].numel() == 0:
+            self.train_dataset = torch.load("/home/eiyike/ASCCFINAL/nerf_bridge/dataset.pt")
+            self.train_image_dataloader = ROSDataloader(
+                self.train_dataset,
+                self.config.publish_training_posearray,
+                self.config.data_update_freq,
+                device=self.device,
+                num_workers=0,
+                pin_memory=True,
+                collate_fn=self.config.collate_fn,
+            )
+
+            self.iter_train_image_dataloader = iter(self.train_image_dataloader)
+            self.train_pixel_sampler = self._get_pixel_sampler(
+                self.train_dataset, self.config.train_num_rays_per_batch
+            )
+            self.train_camera_optimizer = self.config.camera_optimizer.setup(
+                num_cameras=self.train_dataset.cameras.size, device=self.device
+            )
+            self.train_ray_generator = RayGenerator(
+                self.train_dataset.cameras,
+                self.train_camera_optimizer,
+            )
+
         assert self.train_pixel_sampler is not None
         batch = self.train_pixel_sampler.sample(image_batch)
         ray_indices = batch["indices"]
