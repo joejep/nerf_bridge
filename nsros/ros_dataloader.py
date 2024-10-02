@@ -196,10 +196,10 @@ class ROSDataloader(DataLoader):
         batch = {}
         for k, v in self.data_dict.items():
             if isinstance(v, torch.Tensor):
-                print("V in this batch is ", v.shape)
-                print("Selection is", v[: self.current_idx, ...].shape)
-                print("Current index", self.current_idx)
-                batch[k] = v[: self.current_idx, ...]
+                if self.bypass_updated: 
+                    batch[k] = v[self.current_idx:self.current_idx+1, ...]
+                else:
+                    batch[k] = v[: self.current_idx, ...]
         return batch
 
     def __iter__(self):
