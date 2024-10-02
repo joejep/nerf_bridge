@@ -110,8 +110,7 @@ def eval_setup(
     # TODO: expose the ability to choose an arbitrary checkpoint
     config.load_dir = config.get_checkpoint_dir()
     config.pipeline.datamanager.eval_image_indices = None
-    breakpoint()
-
+    
     # setup pipeline (which includes the DataManager)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     pipeline = config.pipeline.setup(device=device, test_mode=test_mode)
