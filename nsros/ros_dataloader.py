@@ -195,9 +195,10 @@ class ROSDataloader(DataLoader):
     def _get_updated_batch(self):
         batch = {}
         for k, v in self.data_dict.items():
-            breakpoint()
             if isinstance(v, torch.Tensor):
+                breakpoint()
                 batch[k] = v[: self.current_idx, ...]
+                print(batch)
         return batch
 
     def __iter__(self):
