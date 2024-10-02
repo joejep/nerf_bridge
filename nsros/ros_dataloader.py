@@ -115,6 +115,8 @@ class ROSDataloader(DataLoader):
         self.publish_posearray = publish_posearray
         self.poselist = []
 
+        self.bypass_updated = bypass_updated
+
         self.coord_st = torch.zeros(3, 4)
         R1 = transform.Rotation.from_euler("x", 180, degrees=True).as_matrix()
         R2 = transform.Rotation.from_euler("z", 0, degrees=True).as_matrix()
