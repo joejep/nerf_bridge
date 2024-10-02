@@ -205,7 +205,7 @@ class ROSDataloader(DataLoader):
     def __iter__(self):
         while True:
             if self.updated:
-                if self.bypass_updated: self.current_idx += 1
+                # if self.bypass_updated: self.current_idx += 1
                 self.batch = self._get_updated_batch()
                 self.updated = False
             batch = self.batch
