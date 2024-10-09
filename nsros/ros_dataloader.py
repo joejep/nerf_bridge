@@ -215,6 +215,8 @@ class ROSDataloader(DataLoader):
             if self.bypass_updated:
                 if count < 500:
                     count += 1
+                    print(count)
                 else:
+                    print("End", count)
                     break
             yield batch
