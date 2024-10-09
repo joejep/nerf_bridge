@@ -211,7 +211,6 @@ class ROSDataloader(DataLoader):
                 self.batch = self._get_updated_batch()
                 self.updated = False
             batch = self.batch
-            print(batch['image'].shape)
             if self.bypass_updated:
                 if count < 500:
                     count += 1
@@ -219,4 +218,5 @@ class ROSDataloader(DataLoader):
                 else:
                     print("End", count)
                     break
+            print(batch['image'].shape)
             yield batch
