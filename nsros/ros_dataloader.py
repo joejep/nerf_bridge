@@ -203,23 +203,10 @@ class ROSDataloader(DataLoader):
         return batch
 
     def __iter__(self):
-        if self.bypass_updated:
-            count = 0
-        count = 0
         while True:
             if self.updated:
                 # if self.bypass_updated: self.current_idx += 1
                 self.batch = self._get_updated_batch()
                 self.updated = False
             batch = self.batch
-            count += 1
-            print(count)
-            if self.bypass_updated:
-                if count < 500:
-                    count += 1
-                    print(count)
-                else:
-                    print("End", count)
-                    break
-            print(batch['image'].shape)
             yield batch
