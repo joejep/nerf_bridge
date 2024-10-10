@@ -160,16 +160,24 @@ class ROSDataloader(DataLoader):
         ):
             # ----------------- Handling the IMAGE ----------------
             # Load the image message directly into the torch
-            im_tensor = torch.frombuffer(image.data, dtype=torch.uint8).reshape(
-                self.H, self.W, -1
-            )
-            im_tensor = im_tensor.to(dtype=torch.float32) / 255.0
+            #im_tensor = torch.frombuffer(image.data, dtype=torch.uint8).reshape(
+            #    self.H, self.W, -1
+           # )
+            np_arr = np.frombuffer(image.data, dtype=np.uint8).reshape(self.H, self.W, -1)
+
+            #im_tensor = im_tensor.to(dtype=torch.float32) / 255.0
+            im_rgb = cv2.cvtColor(np_arr, cv2.COLOR_BGR2RGB)
+            im_tensor = torch.tensor(im_rgb, dtype=torch.float32) / 255.0
             # Convert BGR -> RGB (this adds an extra copy, and might be able to
             # skip if we do something fancy with the reshape above)
             im_tensor = im_tensor.flip([-1])
+            # Permute tensor dimensions from (H, W, C) to (C, H, W)
+            
 
             # COPY the image data into the data tensor
-            self.dataset.image_tensor[self.current_idx] = im_tensor
+            #self.dataset.image_tensor[self.current_idx] = im_tensor
+            self.dataset.image_tensor[self.current_idx] = im_tensor  # Convert HWC to CHW
+
 
             # ----------------- Handling the POSE ----------------
             c2w = ros_pose_to_nerfstudio(pose, static_transform=self.coord_st)
