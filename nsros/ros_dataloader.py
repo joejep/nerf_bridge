@@ -10,7 +10,7 @@ are discarded (could be used for evaluation down the line).
 import time
 import warnings
 from typing import Union
-
+import cv2
 import numpy as np
 import scipy.spatial.transform as transform
 from rich.console import Console
